@@ -1,7 +1,7 @@
-from os import environ
+from decouple import config
 from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = environ('SECRET_KEY')
+SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 ALLOWED_HOSTS = []
 
