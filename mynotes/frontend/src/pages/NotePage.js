@@ -9,13 +9,23 @@ const NotePage = () => {
 
   useEffect(() => {
     getNote();
-  }, [noteId]);
+  }, [noteId.id]);
 
   let getNote = async () => {
     if (noteId.id === "new") return;
     let response = await fetch(`/api/notes/${noteId.id}/`);
     let data = await response.json();
     setNote(data);
+  };
+
+  let createNote = async () => {
+    fetch(`/api/notes/create/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(note),
+    });
   };
 
   let updateNote = async () => {
@@ -39,10 +49,18 @@ const NotePage = () => {
   };
 
   let handleSubmit = async () => {
-    updateNote();
+    if (noteId.id !== "new" && note.body == "") {
+      deleteNote();
+    } else if (noteId.id !== "new") {
+      updateNote();
+    } else if (noteId.id == "new" && note.body !== null) {
+      createNote();
+    }
     navigate("/");
   };
-
+  let handleChange = async (value) => {
+    setNote((note) => ({ ...note, body: value }));
+  };
   return (
     <div className="note">
       <div className="note-header">
@@ -52,14 +70,14 @@ const NotePage = () => {
         {noteId.id !== "new" ? (
           <button onClick={deleteNote}>Delete</button>
         ) : (
-          <button>Done</button>
+          <button onClick={handleSubmit}>Done</button>
         )}
       </div>
       <textarea
         onChange={(e) => {
-          setNote({ ...note, body: e.target.value });
+          handleChange(e.target.value);
         }}
-        defaultValue={note?.body}
+        value={note?.body}
       ></textarea>
     </div>
   );
