@@ -7,19 +7,18 @@ const NotePage = () => {
   let [note, setNote] = useState(null);
   let navigate = useNavigate();
 
-  useEffect(() => {
-    getNote();
-  }, [noteId.id]);
-
   let getNote = async () => {
     if (noteId.id === "new") return;
     let response = await fetch(`/api/notes/${noteId.id}/`);
     let data = await response.json();
     setNote(data);
   };
+  useEffect(() => {
+    getNote();
+  }, [noteId.id]);
 
   let createNote = async () => {
-    fetch(`/api/notes/create/`, {
+    fetch(`/api/notes/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -29,7 +28,7 @@ const NotePage = () => {
   };
 
   let updateNote = async () => {
-    fetch(`/api/notes/${noteId.id}/update/`, {
+    fetch(`/api/notes/${noteId.id}/`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -39,7 +38,7 @@ const NotePage = () => {
   };
 
   let deleteNote = async () => {
-    await fetch(`/api/notes/${noteId.id}/delete/`, {
+    await fetch(`/api/notes/${noteId.id}/`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -49,11 +48,11 @@ const NotePage = () => {
   };
 
   let handleSubmit = async () => {
-    if (noteId.id !== "new" && note.body == "") {
+    if (noteId.id !== "new" && note.body === "") {
       deleteNote();
     } else if (noteId.id !== "new") {
       updateNote();
-    } else if (noteId.id == "new" && note.body !== null) {
+    } else if (noteId.id === "new" && note.body !== null) {
       createNote();
     }
     navigate("/");
